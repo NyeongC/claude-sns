@@ -15,7 +15,8 @@
       "Bash(grep HASH::*)",
       "Bash(grep junit:*)",
       "Bash(python3:*)",
-      "Bash(grep spring-security-crypto:*)"
+      "Bash(grep spring-security-crypto:*)",
+      "Skill(spring-api-rules)"
     ]
   }
 }

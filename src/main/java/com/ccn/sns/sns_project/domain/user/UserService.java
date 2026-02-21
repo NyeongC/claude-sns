@@ -23,10 +23,7 @@ public class UserService implements UserDetailsService {
             throw new UserException("이미 존재하는 사용자명입니다.");
         }
 
-        User user = new User(
-                request.username(),
-                passwordEncoder.encode(request.password())
-        );
+        User user = request.toEntity(passwordEncoder.encode(request.password()));
 
         User savedUser = userRepository.save(user);
 

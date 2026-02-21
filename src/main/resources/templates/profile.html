@@ -3,51 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNS</title>
+    <title th:text="'@' + ${profileUsername} + ' - SNS'">프로필 - SNS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f2f5; color: #222; }
 
         /* Header */
-        .header { background: white; padding: 14px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .header h1 { color: #1d9bf0; font-size: 20px; font-weight: 800; }
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .profile-link { font-weight: 600; color: #333; text-decoration: none; font-size: 14px; }
-        .profile-link:hover { color: #1d9bf0; }
+        .header { background: white; padding: 14px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10; }
+        .back-btn { font-size: 20px; text-decoration: none; color: #333; }
+        .back-btn:hover { color: #1d9bf0; }
+        .header h1 { color: #1d9bf0; font-size: 20px; font-weight: 800; flex: 1; }
         .logout-btn { padding: 7px 14px; background: #e0e0e0; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; color: #333; }
         .logout-btn:hover { background: #d0d0d0; }
 
         /* Main layout */
         .main { max-width: 600px; margin: 0 auto; padding: 20px 0; }
 
-        /* Compose */
-        .compose { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .compose textarea { width: 100%; border: none; outline: none; resize: none; font-size: 16px; font-family: inherit; min-height: 80px; }
-        .compose-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
-        .char-count { font-size: 13px; color: #999; }
-        .char-count.warn { color: #f4a020; }
-        .char-count.over { color: #e0245e; }
-        .post-btn { padding: 8px 20px; background: #1d9bf0; color: white; border: none; border-radius: 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        .post-btn:hover { background: #1a8cd8; }
-        .post-btn:disabled { background: #aaa; cursor: not-allowed; }
-
-        /* Sort tabs */
-        .sort-tabs { display: flex; background: white; border-radius: 12px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .sort-tab { flex: 1; text-align: center; padding: 14px; text-decoration: none; color: #666; font-size: 15px; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.15s; }
-        .sort-tab:hover { background: #f7f9fa; color: #1d9bf0; }
-        .sort-tab.active { color: #1d9bf0; border-bottom-color: #1d9bf0; }
+        /* Profile card */
+        .profile-card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .profile-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .profile-username { font-size: 22px; font-weight: 800; color: #111; }
+        .follow-btn { padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 700; cursor: pointer; border: 2px solid #1d9bf0; transition: all 0.15s; }
+        .follow-btn.following { background: #1d9bf0; color: white; }
+        .follow-btn.following:hover { background: #e0245e; border-color: #e0245e; }
+        .follow-btn.not-following { background: white; color: #1d9bf0; }
+        .follow-btn.not-following:hover { background: #e8f5fd; }
+        .follow-btn.self { display: none; }
+        .stats { display: flex; gap: 24px; margin-top: 16px; }
+        .stat { font-size: 15px; color: #555; }
+        .stat strong { color: #111; font-size: 17px; }
 
         /* Post card */
         .post-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
         .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .post-author { font-weight: 700; color: #111; text-decoration: none; font-size: 15px; }
-        .post-author:hover { color: #1d9bf0; }
         .post-time { font-size: 13px; color: #888; }
         .post-content { font-size: 15px; line-height: 1.6; margin-bottom: 14px; white-space: pre-wrap; word-break: break-word; }
         .post-actions { display: flex; gap: 20px; }
         .action-btn { background: none; border: none; cursor: pointer; font-size: 13px; color: #666; display: flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 20px; transition: all 0.15s; }
         .action-btn:hover { background: #e8f5fd; color: #1d9bf0; }
-        .action-btn.comment-btn:hover { background: #e8f5fd; color: #1d9bf0; }
 
         /* Comment section */
         .comment-section { margin-top: 14px; border-top: 1px solid #f0f0f0; padding-top: 12px; }
@@ -58,7 +51,7 @@
         .comment-form { display: flex; gap: 8px; margin-top: 10px; }
         .comment-input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; font-size: 14px; outline: none; }
         .comment-input:focus { border-color: #1d9bf0; }
-        .comment-submit { padding: 8px 14px; background: #1d9bf0; color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .comment-submit { padding: 8px 14px; background: #1d9bf0; color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
         .comment-submit:hover { background: #1a8cd8; }
 
         /* Empty state */
@@ -68,37 +61,38 @@
 <body>
 
 <div class="header">
+    <a href="/" class="back-btn">←</a>
     <h1>SNS</h1>
-    <div class="header-right">
-        <a th:href="@{/profile/{u}(u=${username})}" class="profile-link" th:text="'@' + ${username}">@user</a>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="logout-btn">로그아웃</button>
-        </form>
-    </div>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="logout-btn">로그아웃</button>
+    </form>
 </div>
 
 <div class="main">
 
-    <!-- 글쓰기 폼 -->
-    <div class="compose">
-        <textarea id="postContent" maxlength="280" placeholder="무슨 일이 있나요?"></textarea>
-        <div class="compose-footer">
-            <span class="char-count" id="charCount">0 / 280</span>
-            <button class="post-btn" id="postBtn" onclick="submitPost()">올리기</button>
+    <!-- 프로필 카드 -->
+    <div class="profile-card">
+        <div class="profile-top">
+            <span class="profile-username" th:text="'@' + ${profileUsername}">@username</span>
+            <button
+                th:if="${currentUsername != profileUsername}"
+                th:classappend="${isFollowing} ? ' following' : ' not-following'"
+                class="follow-btn"
+                th:text="${isFollowing} ? '팔로잉' : '팔로우'"
+                th:attr="data-target=${profileUsername}"
+                onclick="toggleFollow(this)">
+            </button>
+        </div>
+        <div class="stats">
+            <span class="stat"><strong th:text="${followCount.followersCount}">0</strong> 팔로워</span>
+            <span class="stat"><strong th:text="${followCount.followeesCount}">0</strong> 팔로잉</span>
         </div>
     </div>
 
-    <!-- 정렬 탭 -->
-    <div class="sort-tabs">
-        <a th:href="@{/(sort='latest')}" class="sort-tab" th:classappend="${sort == 'latest'} ? ' active'">최신순</a>
-        <a th:href="@{/(sort='popular')}" class="sort-tab" th:classappend="${sort == 'popular'} ? ' active'">인기순</a>
-    </div>
-
-    <!-- 피드 -->
+    <!-- 게시글 목록 -->
     <div id="feed">
         <div th:each="post : ${posts}" class="post-card" th:attr="data-post-id=${post.id}">
             <div class="post-header">
-                <a th:href="@{/profile/{u}(u=${post.authorUsername})}" class="post-author" th:text="'@' + ${post.authorUsername}">@author</a>
                 <span class="post-time" th:text="${post.createdAt}">시간</span>
             </div>
             <p class="post-content" th:text="${post.content}">내용</p>
@@ -121,68 +115,16 @@
 </div>
 
 <script th:inline="javascript">
-    const currentUsername = /*[[${username}]]*/ '';
+    // 팔로우 / 언팔로우 토글
+    async function toggleFollow(btn) {
+        const targetUsername = btn.dataset.target;
+        const isFollowing = btn.classList.contains('following');
+        const method = isFollowing ? 'DELETE' : 'POST';
 
-    // 글자 수 카운트
-    const contentEl = document.getElementById('postContent');
-    const charCountEl = document.getElementById('charCount');
-    contentEl.addEventListener('input', () => {
-        const len = contentEl.value.length;
-        charCountEl.textContent = len + ' / 280';
-        charCountEl.className = 'char-count' + (len >= 280 ? ' over' : len >= 250 ? ' warn' : '');
-    });
-
-    // 글 작성
-    async function submitPost() {
-        const content = contentEl.value.trim();
-        if (!content) return;
-
-        const btn = document.getElementById('postBtn');
-        btn.disabled = true;
-
-        try {
-            const res = await fetch('/api/v1/posts', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({content})
-            });
-
-            if (res.ok) {
-                const post = await res.json();
-                contentEl.value = '';
-                charCountEl.textContent = '0 / 280';
-                prependPostCard(post);
-                const empty = document.querySelector('.empty');
-                if (empty) empty.remove();
-            }
-        } finally {
-            btn.disabled = false;
+        const res = await fetch(`/api/v1/follows/username/${targetUsername}`, {method});
+        if (res.ok) {
+            location.reload();
         }
-    }
-
-    // 새 글을 피드 상단에 추가
-    function prependPostCard(post) {
-        const feed = document.getElementById('feed');
-        const div = document.createElement('div');
-        div.className = 'post-card';
-        div.dataset.postId = post.id;
-        div.innerHTML = `
-            <div class="post-header">
-                <a href="/profile/${post.authorUsername}" class="post-author">@${post.authorUsername}</a>
-                <span class="post-time">${post.createdAt}</span>
-            </div>
-            <p class="post-content">${escapeHtml(post.content)}</p>
-            <div class="post-actions">
-                <button class="action-btn comment-btn" onclick="toggleComments(this)">💬 <span>0</span></button>
-            </div>
-            <div class="comment-section" style="display:none">
-                <div class="comment-list"></div>
-                <form class="comment-form" onsubmit="submitComment(event, this)">
-                    <input type="text" class="comment-input" placeholder="댓글을 입력하세요..." maxlength="280">
-                    <button type="submit" class="comment-submit">등록</button>
-                </form>
-            </div>`;
-        feed.insertBefore(div, feed.firstChild);
     }
 
     // 댓글 토글
