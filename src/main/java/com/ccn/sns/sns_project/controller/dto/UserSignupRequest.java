@@ -1,4 +1,4 @@
-package com.ccn.sns.sns_project.dto;
+package com.ccn.sns.sns_project.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
