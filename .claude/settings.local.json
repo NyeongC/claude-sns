@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew build:*)",
+      "Bash(export JAVA_HOME:*)",
+      "Bash(export PATH=\"$JAVA_HOME/bin:$PATH\")",
+      "Bash(java:*)",
+      "Bash(\"/mnt/c/Program Files/Eclipse Adoptium/jdk-17.0.17.10-hotspot/bin/java.exe\" -version)",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-17.0.17.10-hotspot\" ./gradlew.bat build:*)",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-17.0.17.10-hotspot\" cmd.exe /c \"gradlew.bat build\":*)",
+      "Bash(tail:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(grep spring-boot-security:*)",
+      "Bash(grep HASH::*)",
+      "Bash(grep junit:*)",
+      "Bash(python3:*)",
+      "Bash(grep spring-security-crypto:*)"
+    ]
+  }
+}

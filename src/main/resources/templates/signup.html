@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - SNS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .signup-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { text-align: center; margin-bottom: 30px; color: #333; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #555; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        input:focus { outline: none; border-color: #4a90d9; }
+        button { width: 100%; padding: 12px; background: #4a90d9; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #357abd; }
+        .link { text-align: center; margin-top: 20px; }
+        .link a { color: #4a90d9; text-decoration: none; }
+        .alert { padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: center; }
+        .alert-danger { background: #ffe0e0; color: #c00; }
+        .alert-success { background: #e0ffe0; color: #060; }
+        #message { display: none; }
+    </style>
+</head>
+<body>
+<div class="signup-card">
+    <h1>회원가입</h1>
+    <div id="message" class="alert"></div>
+    <form id="signupForm">
+        <div class="form-group">
+            <label for="username">사용자명</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">가입하기</button>
+    </form>
+    <div class="link">
+        <a th:href="@{/login}">로그인으로 돌아가기</a>
+    </div>
+</div>
+<script>
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const messageDiv = document.getElementById('message');
+
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+
+        try {
+            const response = await fetch('/api/v1/users/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                messageDiv.className = 'alert alert-success';
+                messageDiv.textContent = '회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.';
+                messageDiv.style.display = 'block';
+                setTimeout(() => window.location.href = '/login', 1500);
+            } else {
+                const error = await response.json();
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = error.message || '회원가입에 실패했습니다.';
+                messageDiv.style.display = 'block';
+            }
+        } catch (err) {
+            messageDiv.className = 'alert alert-danger';
+            messageDiv.textContent = '서버 오류가 발생했습니다.';
+            messageDiv.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
