@@ -1,12 +1,13 @@
 package com.ccn.sns.sns_project.controller;
 
+import com.ccn.sns.sns_project.config.auth.AuthUser;
 import com.ccn.sns.sns_project.controller.dto.CommentCreateRequest;
 import com.ccn.sns.sns_project.controller.dto.CommentResponse;
 import com.ccn.sns.sns_project.domain.comment.CommentService;
+import com.ccn.sns.sns_project.domain.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class CommentApiController {
     public ResponseEntity<CommentResponse> createComment(
             @PathVariable Long postId,
             @Valid @RequestBody CommentCreateRequest request,
-            Authentication authentication) {
-        return ResponseEntity.ok(commentService.createComment(authentication.getName(), postId, request));
+            @AuthUser User user) {
+        return ResponseEntity.ok(commentService.createComment(user.getUsername(), postId, request));
     }
 }
